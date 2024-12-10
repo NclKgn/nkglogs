@@ -1,0 +1,153 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My New Hugo Site – Blogs</title>
+    <link>http://localhost:1313/blog/</link>
+    <description>Recent content in Blogs on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	  <atom:link href="http://localhost:1313/blog/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>An insane blog pipeline</title>
+      <link>http://localhost:1313/blog/an-insane-blog-pipeline/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/blog/an-insane-blog-pipeline/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;An insane blog pipeline&lt;/h1&gt;&lt;h2&gt;The Setup&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-setup&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-setup&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;create a folder labeled Posts. This is where you will add your blog posts&lt;/li&gt;
+&lt;li&gt;get the path to it&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Setting up Hugo&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;setting-up-hugo&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#setting-up-hugo&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Install Hugo
+Prerequisites
+Git
+Go&lt;/p&gt;
+&lt;p&gt;git submodule add -f &lt;a href=&#34;https://github.com/panr/hugo-theme-terminal.git&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/panr/hugo-theme-terminal.git&lt;/a&gt; themes/terminal&lt;/p&gt;
+&lt;p&gt;git submodule add -f &lt;a href=&#34;https://github.com/imfing/hextra&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/imfing/hextra&lt;/a&gt; themes/hextra&lt;/p&gt;
+&lt;h3&gt;sync&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;sync&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#sync&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;rsync -av --delete &amp;#34;/Users/nicolaskogane/Library/Containers/co.noteplan.NotePlan-setapp/Data/Library/Application Support/co.noteplan.NotePlan-setapp/Notes/Posts&amp;#34; &amp;#34;/Users/nicolaskogane/10 - Projects/NKGblog/content/&amp;#34;
+	↳ il faut que je change des chose spour que l apartie /mir soit effective&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;hugo server -t hextra  → ne foncitonne pas avec hextra pour l&amp;rsquo;instant mais très bien avec terminal
+↳ il faut que j&amp;rsquo;investigue&lt;/p&gt;
+&lt;p&gt;His work is making this possible:
+![[Pasted image 20241210100856.png]]&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;- [ ] import os
+- [ ] import re
+- [ ] import shutil
+
+- [ ] # Paths
+- [ ] posts_dir = &amp;#34;/Users/nicolaskogane/10 - Projects/NKGblog/content/posts&amp;#34;
+- [ ] attachments_dir = &amp;#34;/Users/nicolaskogane/Library/Containers/co.noteplan.NotePlan-setapp/Data/Library/Application Support/co.noteplan.NotePlan-setapp/Notes/@Attachments&amp;#34;
+- [ ] static_images_dir = &amp;#34;/Users/nicolaskogane/10 - Projects/NKGblog/static/images&amp;#34;
+
+- [ ] # Step 1: Process each markdown file in the posts directory
+- [ ] for filename in os.listdir(posts_dir):
+    - [ ] if filename.endswith(&amp;#34;.md&amp;#34;):
+        - [ ] filepath = os.path.join(posts_dir, filename)
+        
+        - [ ] with open(filepath, &amp;#34;r&amp;#34;) as file:
+            - [ ] content = file.read()
+        
+        - [ ] # Step 2: Find all image links in the format ![Image Description](/images/Pasted%20image%20...%20.png)
+        - [ ] images = re.findall(r&amp;#39;\[\[([^]]*\.png)\]\]&amp;#39;, content)
+        
+        - [ ] # Step 3: Replace image links and ensure URLs are correctly formatted
+        - [ ] for image in images:
+            - [ ] # Prepare the Markdown-compatible link with %20 replacing spaces
+            - [ ] markdown_image = f&amp;#34;![Image Description](/images/{image.replace(&amp;#39; &amp;#39;, &amp;#39;%20&amp;#39;)})&amp;#34;
+            - [ ] content = content.replace(f&amp;#34;[[{image}]]&amp;#34;, markdown_image)
+            
+            - [ ] # Step 4: Copy the image to the Hugo static/images directory if it exists
+            - [ ] image_source = os.path.join(attachments_dir, image)
+            - [ ] if os.path.exists(image_source):
+                - [ ] shutil.copy(image_source, static_images_dir)
+
+        - [ ] # Step 5: Write the updated content back to the markdown file
+        - [ ] with open(filepath, &amp;#34;w&amp;#34;) as file:
+            - [ ] file.write(content)
+
+- [ ] print(&amp;#34;Markdown files processed and images copied successfully.&amp;#34;)&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;To authenticate to github using ssh you have to use a predefined key or generate a new one, here&amp;rsquo;s the link to a perfect post on this topic:
+&lt;a href=&#34;https://medium.com/codex/git-authentication-on-macos-setting-up-ssh-to-connect-to-your-github-account-d7f5df029320&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://medium.com/codex/git-authentication-on-macos-setting-up-ssh-to-connect-to-your-github-account-d7f5df029320&lt;/a&gt;
+to test the connection, you have to run this command in the terminal:&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;ssh -T git@github.com&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;You should get a message saying you succesfully authenticated
+Git won&amp;rsquo;t have shell access, which is normal
+If you get a remote access problem, (&lt;a href=&#34;https://stackoverflow.com/questions/20840012/ssh-remote-host-identification-has-changed&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://stackoverflow.com/questions/20840012/ssh-remote-host-identification-has-changed&lt;/a&gt;)
+the bruteforce solution is to delete the known_hosts (tryed and verified) but you can also more elegantly use&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;ssh-keygen -R &amp;lt;host&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;#e.g. ssh-keygen -R 192.168.3.10&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://medium.com/codex/git-authentication-on-macos-setting-up-ssh-to-connect-to-your-github-account-d7f5df029320&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://medium.com/codex/git-authentication-on-macos-setting-up-ssh-to-connect-to-your-github-account-d7f5df029320&lt;/a&gt;&lt;/p&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>
